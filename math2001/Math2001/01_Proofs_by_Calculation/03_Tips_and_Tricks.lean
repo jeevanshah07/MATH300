@@ -102,51 +102,140 @@ up in Lean. -/
 
 
 example {x y : ℝ} (h1 : x = 3) (h2 : y = 4 * x - 3) : y = 9 :=
-  sorry
+  calc
+    y
+      = 4 * x - 3 := by rw[h2]
+    _ = 4 * 3 - 3 := by rw[h1]
+    _ = 9 := by numbers
 
 example {a b : ℤ} (h : a - b = 0) : a = b :=
-  sorry
+  calc
+    a = a - b + b := by ring
+    _ = 0 + b := by rw[h]
+    _ = b := by ring
 
 example {x y : ℤ} (h1 : x - 3 * y = 5) (h2 : y = 3) : x = 14 :=
-  sorry
+  calc
+    x = x - 3 * y + 3 * y := by ring
+    _ = 5 + 3 * 3 := by rw[h1, h2]
+    _ = 14 := by numbers
 
 example {p q : ℚ} (h1 : p - 2 * q = 1) (h2 : q = -1) : p = -1 :=
-  sorry
+  calc
+    p = p - 2 * q + 2 * q := by ring
+    _ = 1 + 2 * - 1 := by rw[h1, h2]
+    _ = -1 := by numbers
 
 example {x y : ℚ} (h1 : y + 1 = 3) (h2 : x + 2 * y = 3) : x = -1 :=
-  sorry
+  have h3 : y = 2 := by addarith[h1]
+  calc
+    x = x + 2 * y - 2 * y := by ring
+    _ = 3 - 2 * y := by rw[h2]
+    _ = 3 - 2 * 2 := by rw[h3]
+    _ = -1 := by numbers
 
 example {p q : ℤ} (h1 : p + 4 * q = 1) (h2 : q - 1 = 2) : p = -11 :=
-  sorry
+  have h3 : q = 3 := by addarith[h2]
+  calc
+    p = p + 4 * q - 4 * q := by ring
+    _ = 1 - 4 * q := by rw[h1]
+    _ = 1 - 4 * 3 := by rw[h3]
+    _ = -11 := by numbers
 
 example {a b c : ℝ} (h1 : a + 2 * b + 3 * c = 7) (h2 : b + 2 * c = 3)
     (h3 : c = 1) : a = 2 :=
-  sorry
+  have h4 : b = 1 :=
+    calc
+      b = b + 2 * c - 2 * c := by ring
+      _ = 3 - 2 * 1 := by rw[h2, h3]
+      _ = 1 := by numbers
+  calc
+    a = a + 2 * b + 3 * c - 2 * b - 3 * c := by ring
+    _ = 7 - 2 * 1 - 3 * 1 := by rw[h1, h3, h4]
+    _ = 2 := by numbers
 
 example {u v : ℚ} (h1 : 4 * u + v = 3) (h2 : v = 2) : u = 1 / 4 :=
-  sorry
+  calc
+    u = (4 * u + v - v) / 4 := by ring
+    _ = (3 - 2) / 4 := by rw[h1, h2]
+    _ = 1 / 4 := by numbers
 
 example {c : ℚ} (h1 : 4 * c + 1 = 3 * c - 2) : c = -3 :=
-  sorry
+  calc
+    c = 4 * c + 1 - 3 * c - 1 := by ring
+    _ = 3 * c - 2 - 3 * c - 1 := by rw[h1]
+    _ = -3 := by ring
 
 example {p : ℝ} (h1 : 5 * p - 3 = 3 * p + 1) : p = 2 :=
-  sorry
+  have h2 : 2 * p = 4 :=
+    calc
+      2 * p = (5 * p - 3) - (3 * p + 1) + 4 := by ring
+      _ = (3 * p + 1) - (3 * p + 1) + 4 := by rw[h1]
+      _ = 0 + 4 := by ring
+      _ = 4 := by numbers
+  calc
+    p = (2 * p) / 2 := by ring
+    _ = 4 / 2 := by rw[h2]
+    _ = 2 := by numbers
 
 example {x y : ℤ} (h1 : 2 * x + y = 4) (h2 : x + y = 1) : x = 3 :=
-  sorry
+  calc
+    x = 2 * x + y - (x + y) := by ring
+    _ = 4 - 1 := by rw[h1, h2]
+    _ = 3 := by numbers
 
 example {a b : ℝ} (h1 : a + 2 * b = 4) (h2 : a - b = 1) : a = 2 :=
-  sorry
+  have h3 : 3 * b = 3 :=
+    calc
+      3 * b = a + 2 * b - ( a - b) := by ring
+      _ = 4 - 1 := by rw[h1, h2]
+      _ = 3 := by numbers
+  have h4 : b = 1 :=
+    calc
+      b = (3 * b) / 3 := by ring
+      _ = 3 / 3 := by rw[h3]
+      _ = 1 := by numbers
+  calc
+    a = a - b + b := by ring
+    _ = 1 + 1 := by rw[h2, h4]
+    _ = 2 := by numbers
 
 example {u v : ℝ} (h1 : u + 1 = v) : u ^ 2 + 3 * u + 1 = v ^ 2 + v - 1 :=
-  sorry
+  have h2 : u = v - 1 :=
+    calc
+      u = u + 1 - 1 := by ring
+      _ = v - 1 := by rw[h1]
+  calc
+    u ^ 2 + 3 * u + 1
+      = (v-1) ^2 + 3 * (v-1) + 1 := by rw[h2]
+    _ = v^2 - 2 * v + 1 + 3 * v - 3 + 1 := by ring
+    _ = v^2 + v - 1 := by ring
 
 example {t : ℚ} (ht : t ^ 2 - 4 = 0) :
     t ^ 4 + 3 * t ^ 3 - 3 * t ^ 2 - 2 * t - 2 = 10 * t + 2 :=
-  sorry
+  calc
+    t ^ 4 + 3 * t ^ 3 - 3 * t ^ 2 - 2 * t - 2
+      = (t^2 - 4) * (t^2 + 3 * t + 1) + 10 * t + 2 := by ring
+    _ = 0 * (t^2 + 3 * t + 1) + 10 * t + 2 := by rw[ht]
+    _ = 10 * t + 2 := by ring
 
 example {x y : ℝ} (h1 : x + 3 = 5) (h2 : 2 * x - y * x = 0) : y = 2 :=
-  sorry
+  have h3 : x = 2 := by addarith[h1]
+  have h4 : 2 * x = y * x :=
+    calc
+      2 * x = 2 * x - y * x + y * x := by ring
+      _ = 0 + y * x := by rw[h2]
+      _ = y * x := by ring
+  have h5 : y * x = 4 :=
+    calc
+      y * x = 2 * x := by rw[h4]
+      _ = 2 * 2 := by rw[h3]
+      _ = 4 := by numbers
+  calc
+    y = (y * 2) / 2 := by ring
+    _ = (y * x) / 2 := by rw[← h3]
+    _ = 4 / 2 := by rw[h5]
+    _ = 2 := by numbers
 
 example {p q r : ℚ} (h1 : p + q + r = 0) (h2 : p * q + p * r + q * r = 2) :
     p ^ 2 + q ^ 2 + r ^ 2 = -4 :=

@@ -20,20 +20,14 @@ example {x y : ℤ} (hx : x + 3 ≤ 2) (hy : y + 2 * x ≥ 3) : y > 3 :=
 -- Exercise: replace the words "sorry" with the correct Lean justification.
 example {r s : ℚ} (h1 : s + 3 ≥ r) (h2 : s + r ≤ 3) : r ≤ 3 :=
   calc
-    r = (s + r + r - s) / 2 := by ring
-    _ ≤ (3 + (s + 3) - s) / 2 := by rel[h1, h2]
-    _ = 3 := by ring
+    r = (s + r + r - s) / 2 := by sorry
+    _ ≤ (3 + (s + 3) - s) / 2 := by sorry
+    _ = 3 := by sorry
 
 -- Example 1.4.3
 -- Exercise: type out the whole proof printed in the text as a Lean proof.
 example {x y : ℝ} (h1 : y ≤ x + 5) (h2 : x ≤ -2) : x + y < 2 :=
-  calc
-    x + y
-      = x + 5 + y - 5 := by ring
-    _ ≤ x + 5 + (x + 5) - 5 := by rel[h1]
-    _ = 2 * x + 5 := by ring
-    _ ≤ 2 * (-2) + 5 := by rel[h2]
-    _ < 2 := by numbers
+  sorry
 
 -- Example 1.4.4
 -- Exercise: replace the words "sorry" with the correct Lean justification.

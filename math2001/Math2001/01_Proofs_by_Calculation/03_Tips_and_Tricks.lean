@@ -239,4 +239,8 @@ example {x y : ℝ} (h1 : x + 3 = 5) (h2 : 2 * x - y * x = 0) : y = 2 :=
 
 example {p q r : ℚ} (h1 : p + q + r = 0) (h2 : p * q + p * r + q * r = 2) :
     p ^ 2 + q ^ 2 + r ^ 2 = -4 :=
-  sorry
+  calc
+    p^2 + q^2 + r^2
+      = (p + q + r)^2 - 2*(p*q + p*r + q*r) := by ring
+    _ = 0^2 - 2 * 2 := by rw[h1, h2]
+    _ = -4 := by ring

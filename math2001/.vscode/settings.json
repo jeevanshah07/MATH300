@@ -6,7 +6,7 @@
     },
     "editor.minimap.enabled": false,
     "editor.rulers": [100],
-    "lean4.infoview.showExpectedType": false,
+    "lean4.infoview.showExpectedType": true,
     "lean4.infoview.emphasizeFirstGoal": true,
-    "lean4.infoview.showGoalNames": false,
+    "lean4.infoview.showGoalNames": true,
 }

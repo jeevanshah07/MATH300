@@ -1,0 +1,73 @@
+\documentclass{exam}
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{gensymb}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{nameref}
+\usepackage[x11names]{xcolor}
+\usepackage[most]{tcolorbox}
+
+\newcommand{\ZZ}{\mathbb Z}
+\newcommand{\QQ}{\mathbb Q}
+\newcommand{\NN}{\mathbb N}
+\newcommand{\RR}{\mathbb R}
+\newcommand{\braces}[1]{\ensuremath{\left\{#1 \right\}}}
+
+\begin{document}
+    \pagestyle{headandfoot}
+    \runningheadrule
+    \runningheader{MATH300}{Reference Sheet}{Exam 1}
+    \firstpageheader{MATH300}{Reference Sheet}{Exam 1}
+    \firstpageheadrule
+    \runningfooter{}{\thepage}{}
+    \firstpagefooter{}{}{}
+
+    \section*{Tactics}
+    \begin{itemize}
+        \item \verb|rw[HYPOTHESIS]|: Substitutes the left hand side of an equality in \texttt{[HYPOTHESIS]} with the right hand side
+        \item \verb|rel[HYPOTHESIS]|: Substitutes the left hand side of an inequality in \texttt{[HYPOTHESIS]} with the right hand side
+        \item \verb|addarith[HYPOTHESIS]|: basic addition and subtraction with the provided hypothesis. 
+        \item \verb|have [HYPOTHESIS_NAME] : [STATEMENT] := by [REASONING]|: creates a new hypothesis called \\ \verb|HYPOTHESIS_NAME| for future reference. 
+        \item \verb|ring|: used as justification for things related to ring properties such as addition, subtract, multiplication (and sometimes division) with variables or ring elements
+        \item \verb|extra|: used as justification for when an inequality differs by a neutral positive value. Eg: \texttt{y < 1 + y := by extra}
+        \item \verb|cancel [ITEM] at [HYPOTHESIS]|: essentially divides both sides of an (in)equality by \verb|[ITEM]| and rewrites the hypothesis. Eg: if \texttt{h1 : t\^{}2 = t} then \texttt{cancel t at h1} would give \texttt{h1 : t = 1}
+        \item \verb|numbers|: Provides justification for any statement involving only numbers.
+        \item \verb|exact [HYPOTHESIS]|: Given \texttt{[HYPOTHESIS]} that matches the goal exactly, close the goal using \\ \verb|exact [HYPOTHESIS]|
+        \item \verb|apply [HYPOTHESIS]|: Used to choose a specific value for hypothesis' involving the universal quanitifier.
+    \end{itemize}
+    \subsection*{OR Goals and Hypothesis}
+    \begin{itemize}
+        \item \verb+obtain h1 | h2 := h3+: splits a hypothesis in the form $x \lor y$ into two seperate goals.
+        \item \verb|left|: Given a goal in the form \texttt{a $\lor$ b}, chooses to prove the left side, \texttt{a}
+        \item \verb|right|: Given a goal in the form \texttt{a $\lor$ b}, chooses to prove the right side \texttt{b}
+    \end{itemize}
+    \subsection*{AND Goals and Hypothesis}
+    \begin{itemize}
+        \item \texttt{obtain $\langle$ h1 , h2 $\rangle$ := h3}: splits a hypothesis in the form $x \land y$ into two sepreate hypothesis's
+        \item \verb|constructor|: Splits a goal involving AND into two seperate goals to be closed sequentially
+    \end{itemize}
+    \subsection*{Existential Quanitifier Goals and Hypothesis}
+    \begin{itemize}
+        \item \verb|use [VALUE(S)]|: For goals involving existance, provided \texttt{[VALUE(S)]} are the value(s) for the quanities that we must prove the existance of.
+        \item \texttt{obtain $\langle$ x, hx $\rangle$ := h}: Creates a value and a hypothesis from another hypothesis that has the existential quantifer in it. Eg. if \texttt{h1 : $\exists$ a : $\RR$, a * t < 0} then, \texttt{obtain $\langle$ x, hx $\rangle$ := h1} gives \texttt{hx : x * t < 0}
+    \end{itemize}
+    \section*{Lemmas}
+    \begin{itemize}
+        \item \verb|apply ne_of_lt|: Changes any goal in the form of $x \neq y$ to $x < y$ (usually paired with \verb|apply ne_of_gt|)
+        \item \verb|apply ne_of_gt|: Changes any goal in the form of $x \neq y$ to $y < x$ (usually paired with \verb|apply ne_of_lt|)
+        \item \verb|apply abs_le_of_sq_le_sq'|: if \texttt{x \^{} 2 $\leq$ y \^{} 2} and \texttt{0 $\leq$ y}, then \texttt{-y $\leq$ x $\land$ x $\leq$ y}
+        \item \verb|apply le_antisymm|: Changes a goal in the form of \texttt{a = b} into two subgoals \texttt{a $\leq$ b} and \texttt{a $\geq$ b}
+        \item \verb|rw[mul_eq_zero] at [HYPOTHESIS]|: If you have \texttt{[HYPOTHESIS]} in the form \texttt{xy = 0}, then \\ \verb|rw[mul_eq_zero] at [HYPOTHESIS]| gives \texttt{[HYPOTHESIS : x = 0 $\lor$ y = 0]}
+        \item \verb|Int.even_or_odd n|: Creates a hypothesis in the form \texttt{Even n $\lor$ Odd n} that any integer \texttt{n} must be even or odd
+    \end{itemize}
+
+    \section*{Definitions}
+    \begin{itemize}
+        \item \verb|dsimp[DEFINITION] at *|: rewrites all written occurences of \texttt{[DEFINITION]} in terms of its mathematical definition.
+        \item \texttt{Odd (n : $\ZZ$)}: \texttt{n = 2 * k + 1}
+        \item \texttt{Even (n : $\ZZ$)}: \texttt{n = 2 * k}
+        \item \texttt{( $\cdot$ | $\cdot$ )}: Definition of divisibility, used to unpack goals in the form \texttt{a | b}
+    \end{itemize}
+\end{document}

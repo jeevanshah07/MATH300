@@ -4,6 +4,36 @@ import Library.Basic
 
 math2001_init
 
+example {x : ℝ} (h1: x ≥ 0) (h2: x^2 ≥ 9) : x ≥ 3 := by
+  have h3 : (x-3)*(x+3) ≥ 0 := by
+    calc
+      (x-3)*(x+3) = x^2 - 9 := by ring
+      _ ≥ 0 := by addarith[h2]
+  obtain ha | hb := mul_nonneg_iff.mp h3
+  · obtain ⟨ ha', hb' ⟩ := ha
+    addarith[ha']
+  · obtain ⟨ ha', hb' ⟩ := hb
+    have h4 : x ≤ -3 := by addarith[hb']
+    addarith[h1, h4]
+
+example {a b : ℝ} (h1 : a = b ∨ a = -b) : a^2 = b^2 := by
+  obtain h | h := h1
+  calc
+    a^2 = b^2 := by rw[h]
+    _ = b^2 := by ring
+  calc
+    a^2 = (-b)^2 := by rw[h]
+    _ = b^2 := by ring
+
+example { u v w : ℝ } (h : u ≤ v ∧ v ≤ w) : u ≤ w := by
+  obtain ⟨ h1, h2 ⟩ := h
+  calc
+    u ≤ v := by rel[h1]
+    _ ≤ w := by rel[h2]
+
+example : ∃ m n : ℤ, m^2 - n^2 = 15 := by
+  use 4, 1
+  numbers
 
 example {a : ℚ} (h : ∃ b : ℚ, a = b ^ 2 + 1) : a > 0 := by
   obtain ⟨b, hb⟩ := h

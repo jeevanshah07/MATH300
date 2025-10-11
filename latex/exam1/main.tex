@@ -32,7 +32,7 @@
         \item \verb|have [HYPOTHESIS_NAME] : [STATEMENT] := by [REASONING]|: creates a new hypothesis called \\ \verb|HYPOTHESIS_NAME| for future reference. 
         \item \verb|ring|: used as justification for things related to ring properties such as addition, subtract, multiplication (and sometimes division) with variables or ring elements
         \item \verb|extra|: used as justification for when an inequality differs by a neutral positive value. Eg: \texttt{y < 1 + y := by extra}
-        \item \verb|cancel [ITEM] at [HYPOTHESIS]|: essentially divides both sides of an (in)equality by \verb|[ITEM]| and rewrites the hypothesis. Eg: if \texttt{h1 : t\^{}2 = t} then \texttt{cancel t at h1} would give \texttt{h1 : t = 1}
+        \item \verb|cancel [ITEM] at [HYPOTHESIS]|: essentially divides both sides of an (in)equality by \verb|[ITEM]| and rewrites the hypothesis, as long at the value you are canceling is not 0. Eg: if \texttt{h1 : t\^{}2 = t} and \texttt{h2: t $\geq$ 0}, then \texttt{cancel t at h1} would give \texttt{h1 : t = 1}. Note as well that you can cancel powers: if you have \texttt{h3 : a\^{}2$\geq$ 1} you can \texttt{cancel 2 at h3} to give \texttt{h3 : a $\geq$ 1}
         \item \verb|numbers|: Provides justification for any statement involving only numbers.
         \item \verb|exact [HYPOTHESIS]|: Given \texttt{[HYPOTHESIS]} that matches the goal exactly, close the goal using \\ \verb|exact [HYPOTHESIS]|
         \item \verb|apply [HYPOTHESIS]|: Used to choose a specific value for hypothesis' involving the universal quanitifier.

@@ -1,5 +1,6 @@
 /- Copyright (c) Heather Macbeth, 2022.  All rights reserved. -/
 import Library.Basic
+-- import Mathlib.Data.Real.Basic
 
 math2001_init
 
@@ -198,12 +199,57 @@ example (n : ℤ) : ∃ m ≥ n, Odd m := by
   obtain ha | hb := Int.even_or_odd n
   · obtain ⟨ k, hk ⟩ := ha
     use 2 * k + 1
-    calc
-      n = 2 * k := by rw[hk]
-      _ ≤ 2 * k + 1 := by extra
+    constructor
+    · calc
+        n = 2 * k := by rw[hk]
+        _ ≤ 2 * k + 1 := by extra
+    · use k; rfl
   · obtain ⟨ k, hk ⟩ := hb
-    use 2 * k + 1
-    calc
-      n = 2 * k + 1 := by rw[hk]
+    use n
+    constructor
+    · exact Int.le_refl n
+    · use k; rw[hk]
+
 example (a b c : ℤ) : Even (a - b) ∨ Even (a + c) ∨ Even (b - c) := by
-  sorry
+  obtain ha | hA := Int.even_or_odd a
+  obtain hb | hB := Int.even_or_odd b
+  obtain hc | hC := Int.even_or_odd c
+  · left
+    obtain ⟨ k, hk ⟩ := ha
+    obtain ⟨ t, ht ⟩ := hb
+    use k-t; rw[hk, ht]; ring
+  · left
+    obtain ⟨ k, hk ⟩ := ha
+    obtain ⟨ t, ht ⟩ := hb
+    use k-t; rw[hk, ht]; ring
+
+  obtain hc | hC := Int.even_or_odd c
+  · right; left
+    obtain ⟨ k, hk ⟩ := ha
+    obtain ⟨ t, ht ⟩ := hc
+    use k+t; rw[hk, ht]; ring
+  · right; right
+    obtain ⟨ k, hk ⟩ := hB
+    obtain ⟨ t, ht ⟩ := hC
+    use k-t; rw[hk, ht]; ring
+
+  obtain hb | hB := Int.even_or_odd b
+  obtain hc | hC := Int.even_or_odd c
+  · right; right
+    obtain ⟨ k, hk ⟩ := hb
+    obtain ⟨ t, ht ⟩ := hc
+    use k-t; rw[hk, ht]; ring
+  · right; left
+    obtain ⟨ k, hk ⟩ := hA
+    obtain ⟨ t, ht ⟩ := hC
+    use k + t + 1; rw[hk, ht]; ring
+
+  obtain hc | hC := Int.even_or_odd c
+  · left
+    obtain ⟨ k, hk ⟩ := hA
+    obtain ⟨ t, ht ⟩ := hB
+    use k - t; rw[hk, ht]; ring
+  · right; right
+    obtain ⟨ k, hk ⟩ := hB
+    obtain ⟨ t, ht ⟩ := hC
+    use k - t; rw[hk, ht]; ring

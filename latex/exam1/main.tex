@@ -61,6 +61,7 @@
         \item \verb|apply le_antisymm|: Changes a goal in the form of \texttt{a = b} into two subgoals \texttt{a $\leq$ b} and \texttt{a $\geq$ b}
         \item \verb|rw[mul_eq_zero] at [HYPOTHESIS]|: If you have \texttt{[HYPOTHESIS]} in the form \texttt{xy = 0}, then \\ \verb|rw[mul_eq_zero] at [HYPOTHESIS]| gives \texttt{[HYPOTHESIS : x = 0 $\lor$ y = 0]}
         \item \verb|Int.even_or_odd n|: Creates a hypothesis in the form \texttt{Even n $\lor$ Odd n} that any integer \texttt{n} must be even or odd
+        \item \verb|apply Int.not_dvd_of_exists_lt_and_lt|: Used to prove that one integer does not divide another. Creates a goal in the form \texttt{$\exists$ q, b * q < q $\land$ a < b * (q + 1)}, or essentially that if \texttt{a} is between two multiple of \texttt{b}, then \texttt{b} cannot divide \texttt{a}
     \end{itemize}
 
     \section*{Definitions}

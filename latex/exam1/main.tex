@@ -27,15 +27,18 @@
     \section*{Tactics}
     \begin{itemize}
         \item \verb|rw[HYPOTHESIS]|: Substitutes the left hand side of an equality in \texttt{[HYPOTHESIS]} with the right hand side
-        \item \verb|rel[HYPOTHESIS]|: Substitutes the left hand side of an inequality in \texttt{[HYPOTHESIS]} with the right hand side
+        \item \verb|rel[HYPOTHESIS]|: Substitutes the left hand side of an inequality in \texttt{[HYPOTHESIS]} with the right hand side; also applies rules of modular arithmetic such as the addition, subtraction, negative, and multiplication rules. 
         \item \verb|addarith[HYPOTHESIS]|: basic addition and subtraction with the provided hypothesis. 
         \item \verb|have [HYPOTHESIS_NAME] : [STATEMENT] := by [REASONING]|: creates a new hypothesis called \\ \verb|HYPOTHESIS_NAME| for future reference. 
         \item \verb|ring|: used as justification for things related to ring properties such as addition, subtract, multiplication (and sometimes division) with variables or ring elements
         \item \verb|extra|: used as justification for when an inequality differs by a neutral positive value. Eg: \texttt{y < 1 + y := by extra}
         \item \verb|cancel [ITEM] at [HYPOTHESIS]|: essentially divides both sides of an (in)equality by \verb|[ITEM]| and rewrites the hypothesis, as long at the value you are canceling is not 0. Eg: if \texttt{h1 : t\^{}2 = t} and \texttt{h2: t $\geq$ 0}, then \texttt{cancel t at h1} would give \texttt{h1 : t = 1}. Note as well that you can cancel powers: if you have \texttt{h3 : a\^{}2$\geq$ 1} you can \texttt{cancel 2 at h3} to give \texttt{h3 : a $\geq$ 1}
-        \item \verb|numbers|: Provides justification for any statement involving only numbers.
+        \item \verb|numbers|: Provides justification for any statement involving only numbers. If there is a hypothesis that cannot be true (such as $0 > 7$), \texttt{numbers at [HYPOTHESIS]} can be used to show a contradiction
         \item \verb|exact [HYPOTHESIS]|: Given \texttt{[HYPOTHESIS]} that matches the goal exactly, close the goal using \\ \verb|exact [HYPOTHESIS]|
         \item \verb|apply [HYPOTHESIS]|: Used to choose a specific value for hypothesis' involving the universal quanitifier.
+        \item \verb|mod_cases hx : x % n|: Creates $n$ different cases with the hypothesis \texttt{hx : x $\equiv$ k [ZMOD n]} for $0 \leq k < n$
+        \item \verb|interval_cases x|: If $x$ is bounded above and below, \texttt{interval\_cases} creates a case for each possible value of $x$
+        \item \verb|contradiction|: If there are two hypothesis that connot be simultaneously true, then \verb|contradiction| closes the goal
     \end{itemize}
     \subsection*{OR Goals and Hypothesis}
     \begin{itemize}
@@ -51,12 +54,19 @@
     \subsection*{Existential Quanitifier Goals and Hypothesis}
     \begin{itemize}
         \item \verb|use [VALUE(S)]|: For goals involving existance, provided \texttt{[VALUE(S)]} are the value(s) for the quanities that we must prove the existance of.
-        \item \texttt{obtain $\langle$ x, hx $\rangle$ := h}: Creates a value and a hypothesis from another hypothesis that has the existential quantifer in it. Eg. if \texttt{h1 : $\exists$ a : $\RR$, a * t < 0} then, \texttt{obtain $\langle$ x, hx $\rangle$ := h1} gives \texttt{hx : x * t < 0}
+        \item \texttt{obtain $\langle$ x, hx $\rangle$ := h}: Creates a value and a hypothesis from another hypothesis that has the existential quantifer in it. Eg. if \texttt{h1 : $\exists$ a : $\RR$, a * t < 0} then, \texttt{obtain $\langle$ x, hx $\rangle$ := h1} gives \texttt{hx : x * t < 0} (often used with even/odd and divisibility proofs)
+    \end{itemize}
+    \subsection*{Universal Quantifier Goals and Hypothesis}
+    \begin{itemize}
+        \item \verb|intro x|: For goals that contain JUST the universal quantifier, introduces a variable \verb|x| for use 
+        \item \verb|intro x hx|: For goals that contain implication, introduces a variable \verb|x| and a hypothesis \verb|hx| such that \verb|x| satisfies the proposition. 
     \end{itemize}
     \section*{Lemmas}
     \begin{itemize}
         \item \verb|apply ne_of_lt|: Changes any goal in the form of $x \neq y$ to $x < y$ (usually paired with \verb|apply ne_of_gt|)
         \item \verb|apply ne_of_gt|: Changes any goal in the form of $x \neq y$ to $y < x$ (usually paired with \verb|apply ne_of_lt|)
+        \item \verb|le_or_lt x y|: Creates an OR hypothesis of the form \texttt{x $\leq$ y $\lor$ x $<$ y}
+        \item \verb|le_or_gt x y|: Creates an OR hypothesis of the form \texttt{x $\leq$ y $\lor$ x $>$ y} (best used with hypothesis in the form $x \neq y$)
         \item \verb|apply abs_le_of_sq_le_sq'|: if \texttt{x \^{} 2 $\leq$ y \^{} 2} and \texttt{0 $\leq$ y}, then \texttt{-y $\leq$ x $\land$ x $\leq$ y}
         \item \verb|apply le_antisymm|: Changes a goal in the form of \texttt{a = b} into two subgoals \texttt{a $\leq$ b} and \texttt{a $\geq$ b}
         \item \verb|rw[mul_eq_zero] at [HYPOTHESIS]|: If you have \texttt{[HYPOTHESIS]} in the form \texttt{xy = 0}, then \\ \verb|rw[mul_eq_zero] at [HYPOTHESIS]| gives \texttt{[HYPOTHESIS : x = 0 $\lor$ y = 0]}

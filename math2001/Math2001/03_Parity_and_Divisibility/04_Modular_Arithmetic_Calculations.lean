@@ -1,6 +1,7 @@
 /- Copyright (c) Heather Macbeth, 2022.  All rights reserved. -/
 import Library.Basic
 import Library.Tactic.ModEq
+import Library.Theory.ModEq.Defs
 
 math2001_init
 
@@ -116,3 +117,41 @@ example {x : ℤ} : x ^ 5 ≡ x [ZMOD 5] := by
       _ = 204 * 5 + 4 := by numbers
       _ ≡ 4 [ZMOD 5] := by extra
       _ ≡ x [ZMOD 5] := by rel[hx]
+
+theorem Int.ModEq.pow_two (h : a ≡ b [ZMOD n]) : a ^ 2 ≡ b ^ 2 [ZMOD n] := by
+  obtain ⟨x, hx⟩ := h
+  use x * (a + b)
+  calc
+    a ^ 2 - b ^ 2 = (a - b) * (a + b) := by ring
+    _ = n * x * (a + b) := by rw [hx]
+    _ = n * (x * (a + b)) := by ring
+
+example { n : ℤ} : 3 ∣ n ↔ 3 ∣ n^2 := by
+  constructor
+  · intro h
+    obtain ⟨ k, hk ⟩ := h
+    use 3*k^2
+    calc
+      n^2 = (3*k)^2 := by rw[hk]
+      _ = 3 * (3*k^2) := by ring
+  · intro h
+    obtain ⟨ k, hk ⟩ := h
+    have h1 : n^2 ≡ 0 [ZMOD 3] := by
+      use k
+      calc
+        n^2 - 0 = 3*k - 0 := by rw[hk]
+        _ = 3 * k := by ring
+    mod_cases h2 : n % 3
+    · obtain ⟨ t, ht ⟩ := h2
+      use t
+      calc
+        n = n - 0 := by ring
+        _ = 3 * t := by rw[ht]
+    · have h3 : n^2 ≡ 1 [ZMOD 3] := by
+        apply Int.ModEq.pow_two at h2
+        exact h2
+      numbers at h3
+    · have h3 : n^2 ≡ 1 [ZMOD 3] := by
+        apply Int.ModEq.pow_two at h2
+        exact h2
+      numbers at h3

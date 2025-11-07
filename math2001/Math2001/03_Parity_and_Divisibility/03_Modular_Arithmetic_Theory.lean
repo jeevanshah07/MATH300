@@ -173,3 +173,5 @@ example {k : ℤ} (hb : k ≡ 3 [ZMOD 5]) :
   apply hb
   apply Int.ModEq.pow_three hb
   apply Int.ModEq.refl
+
+

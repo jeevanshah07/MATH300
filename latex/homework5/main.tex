@@ -1,0 +1,156 @@
+\documentclass{exam}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{nameref}
+
+\newtheorem{proposition}{Proposition}
+\hypersetup{colorlinks=true, linktoc=section, linkcolor=blue}
+
+
+\begin{document}
+    \pagestyle{headandfoot}
+    \runningheadrule
+    \firstpageheader{MATH300 \\ Intro Math Reasoning}{Homework 5}{Prof. Khaitan}
+    \firstpageheadrule
+    \runningheader{MATH300}{}{Homework}
+    \firstpagefooter{}{}{}
+    \runningfooter{}{\thepage}{}
+
+\begin{proposition}
+    For all $n\in\mathbb{N}$, 
+    \[
+        \sum_{k=0}^{n}k = \frac{n(n+1)}{2} 
+    \]    
+\end{proposition}
+\begin{proof}
+    We will prove this using induction on $n$. We start by proving the base case, $n=1$,
+    \[
+        \sum_{k=0}^{1} k = 1 = \frac{1(1+2)}{2}.
+    \]
+    Therefore, since the LHS and RHS are equal, the base case is true. \\ Now we will assume that for some $t \in \mathbb{N}$
+    \[
+        \sum_{k=0}^{t} k = \frac{t(t+1)}{2},
+    \]
+    and we must show that this property holds true for $t+1$, ie. 
+    \[
+        \sum_{k=0}^{t+1} k = \frac{(t+1)(t+2)}{2}.
+    \]
+    Consider 
+    \begin{align*}
+        \sum_{k=0}^{t+1} k &= t+1 + \sum_{k=0}^{t} k \\
+        &= t+1 + \frac{t(t+1)}{2} \tag{by the IH} \\
+        &= \frac{2t+2}{2} + \frac{t^2 + t}{2} \\
+        &= \frac{t^2 + 3t + 2}{2} \\
+        &= \frac{(t+1)(t+2)}{2}
+    \end{align*}
+    Which was to be shown.
+\end{proof}
+
+\begin{proposition}
+    For all $n \in \mathbb{N}$, $2n^3 + 3n^2 + n$ is divisible by $6$.
+\end{proposition}
+\begin{proof}
+    We will prove this using induction on $n$. For the base case $n=0$ we have 
+    \[
+        2(0)^3 + 3(0)^2 + 0 = 0 \Rightarrow 6 \mid 0.
+    \]
+    Thus, the base case is true. \\ Now we will assume that for some $k \in \mathbb{N}$, 
+    \[
+        6 \mid 2k^3 + 3k^2 + k
+    \]
+    We must show that 
+    \[
+        6 \mid 2\left(k+1\right)^3 + 3\left(k+1\right)^2 + k+1.
+    \]
+    But 
+    \begin{align*}
+        2(k+1)^3 + 3(k+1)^2 + k + 1 &= 2(k^3 + 3k^2 + 3k + 1) + 3(k^2 + 2k + 1) + k + 1 \\
+        &= 2k^3 + 6k^2 + 6k + 2 + 3k^2 + 6k + 3 + k + 1 \\
+        &= (2k^3 + 3k^2 + k) + 6k^2 + 12k + 6 \\
+        &= 6t + 6(k^2 + 2k + 1) \tag{by the IH $2k^3 + 3k^2 + k = 6t$ for $t \in \mathbb{N}$} \\
+        &= 6(t + k^2 + 2k + 1).
+    \end{align*}
+    Therefore, since $\mathbb{N}$ is closed under addition and multiplication, $t + k^2 + 2k + 1 \in \mathbb{N}$ and so, by definition $6 \mid 2(k+1)^3 + 3(k+1)^2 + k + 1$.
+\end{proof}
+
+\newpage 
+
+\begin{proposition}
+    For all $n \in \mathbb{Z}, n\geq\,4$, 
+    \[
+        2^{n} < n\textbf{!} 
+    \]
+\end{proposition}
+
+\begin{proof}
+    We will prove this using induction on $n$. For the base case $n=4$ we have,
+    \[
+        2^{4} = 16 < 4\textbf{!} = 24.
+    \]
+    This inequality is true and thus the base case is true. \\ We will now assume that for some $k \in \mathbb{Z}, k \geq 4$, 
+    \[
+        2^{k} < k\textbf{!}.
+    \]
+    We must show that 
+    \[
+        2^{k+1} < \left(k+1\right)\textbf{!}.
+    \]
+    But, 
+    \begin{align*}
+        2^{k+1} = 2^{k}2 < k\textbf{!} \cdot 2 < (k+1)k\textbf{!} = \left(k+1\right)\textbf{!}.
+    \end{align*}
+    This inequality holds true because since $k \geq 4$, $k+1 > 2$ for all $k$. Thus, $2^{k+1} < \left(k+1\right)\textbf{!}$.
+\end{proof}
+
+\begin{proposition}
+    For all $n \in \mathbb{N}$ 
+    \[
+        \sum_{i=0}^{n} i \cdot i\textbf{!} = \left(n+1\right)! - 1 
+    \]
+\end{proposition}
+
+\begin{proof}
+    We will prove this using induction on $n$. For the base case $n=0$ we have 
+    \[
+        \sum_{i=0}^{0} i \cdot i\textbf{!} = 0 = (0+1)\textbf{!}-1.
+    \]
+    Since the LHS and RHS are equivalent, the base case is true. \\ We will now assume that for some $k \in \mathbb{N}$, 
+    \[
+        \sum_{i=0}^{k} k \cdot k\textbf{!} = (k+1)\textbf{!} - 1.
+    \]
+    We must show that 
+    \[
+        \sum_{i=0}^{k+1} (k+1) \cdot (k+1)\textbf{!} = \left(k+2\right)\textbf{!} - 1.
+    \]
+    But, 
+    \begin{align*}
+        \sum_{i=0}^{k+1} (k+1) \cdot (k+1)\textbf{!} &= (k+1) \cdot (k+1)\textbf{!} + \sum_{i=0}^{k} k \cdot k\textbf{!} \\
+        &= (k+1) \cdot (k+1)\textbf{!} + (k+1)\textbf{!} - 1 \tag{by IH} \\
+        &= (k+1)\textbf{!}(k+1 + 1) - 1 \\
+        &= (k+1)\textbf{!}(k+2) - 1 \\
+        &= (k+2)\textbf{!} - 1.
+    \end{align*}
+    Which was to be shown.
+\end{proof}
+
+\newpage
+
+\begin{proposition}
+    For all $n\in\mathbb{Z}, n\geq\,12$, there exist $k, l \in \mathbb{N}$ such that $n = 4k + 5l$
+\end{proposition}
+
+\begin{proof}
+    We will prove this using strong induction on $n$. For the base cases $n=12, 13, 14, 15$ we have 
+    \begin{align*}
+        n &= 12 = 4(3) + 5(0) \\
+        n &= 13 = 4(2) + 5(1) \\
+        n &= 14 = 4(1) + 5(2) \\
+        n &= 15 = 4(0) + 5(3)
+    \end{align*} \\ We will now assume that for some $t \in \mathbb{Z}, 12\leq\,t\leq\,n$ there exist $k, l \in \mathbb{N}$ such that $t = 4k + 5l$. We must show that $n+1 = 4k + 5l$. Since $n\geq\,15$ we know that $n+1\geq 16$ so $(n+1)-4 \geq 12$. Then $(n+1) - 4 = 4k' + 5l' \Rightarrow n+1 = 4(k'+1) + 5l'$. Thus $k=k'+1$ and $l=l'$ so there exist $k$ and $l$ such that $n+1 = 4k + 5l$ which was to be shown.
+\end{proof}
+
+\footnotetext{\LaTeX code for this document can be found on \href{https://github.com/jeevanshah07/MATH300/tree/main/latex/homework5/main.tex}{\underline{github}}}
+\end{document}

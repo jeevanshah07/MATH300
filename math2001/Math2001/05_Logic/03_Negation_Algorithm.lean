@@ -20,7 +20,9 @@ example (P Q : Prop) : ¬ (P ∧ Q) ↔ (¬ P ∨ ¬ Q) := by
       contradiction
     · left
       apply hP
-  · sorry
+  · intro H
+    push_neg
+    exact H
 
 example :
     ¬(∀ m : ℤ, m ≠ 2 → ∃ n : ℤ, n ^ 2 = m) ↔ ∃ m : ℤ, m ≠ 2 ∧ ∀ n : ℤ, n ^ 2 ≠ m :=
@@ -31,8 +33,12 @@ example :
 
 
 example : ¬(∀ n : ℤ, ∃ m : ℤ, n ^ 2 < m ∧ m < (n + 1) ^ 2)
-    ↔ ∃ n : ℤ, ∀ m : ℤ, n ^ 2 ≥ m ∨ m ≥ (n + 1) ^ 2 :=
-  sorry
+    ↔ ∃ n : ℤ, ∀ m : ℤ, n ^ 2 ≥ m ∨ m ≥ (n + 1) ^ 2 := calc
+    ¬(∀ n : ℤ, ∃ m : ℤ, n ^ 2 < m ∧ m < (n + 1) ^ 2)
+      ↔ ∃ n : ℤ, ¬(∃ m : ℤ, n ^ 2 < m ∧ m < (n + 1) ^ 2) := by rel[not_forall]
+      _ ↔ ∃ n : ℤ, ∀ m : ℤ, ¬ (n ^ 2 < m ∧ m < (n + 1) ^ 2) := by rel[not_exists]
+      _ ↔ ∃ n : ℤ, ∀ m : ℤ, ¬ (n ^ 2 < m) ∨ ¬ (m < (n + 1) ^ 2) := by rel[not_and_or]
+      _ ↔ ∃ n : ℤ, ∀ m : ℤ,  (n ^ 2 ≥ m) ∨  (m ≥ (n + 1) ^ 2) := by rel[not_lt]
 
 #push_neg ¬(∀ m : ℤ, m ≠ 2 → ∃ n : ℤ, n ^ 2 = m)
   -- ∃ m : ℤ, m ≠ 2 ∧ ∀ (n : ℤ), n ^ 2 ≠ m
@@ -55,29 +61,38 @@ example : ¬ (∃ n : ℕ, n ^ 2 = 2) := by
     calc
       n ^ 2 ≤ 1 ^ 2 := by rel [hn]
       _ < 2 := by numbers
-  · sorry
+  · apply ne_of_gt
+    calc
+      2 < 2^2 := by numbers
+      _ ≤ n^2 := by rel[hn]
 
 /-! # Exercises -/
 
 
 example (P : Prop) : ¬ (¬ P) ↔ P := by
-  sorry
+  push_neg
+  constructor <;> intro h <;> apply h
 
 example (P Q : Prop) : ¬ (P → Q) ↔ (P ∧ ¬ Q) := by
-  sorry
+  push_neg
+  constructor <;> intro h <;> apply h
 
 example (P : α → Prop) : ¬ (∀ x, P x) ↔ ∃ x, ¬ P x := by
-  sorry
+  push_neg
+  constructor <;> intro h <;> apply h
 
 example : (¬ ∀ a b : ℤ, a * b = 1 → a = 1 ∨ b = 1)
-    ↔ ∃ a b : ℤ, a * b = 1 ∧ a ≠ 1 ∧ b ≠ 1 :=
-  sorry
+    ↔ ∃ a b : ℤ, a * b = 1 ∧ a ≠ 1 ∧ b ≠ 1 := by
+  push_neg
+  constructor <;> intro h <;> apply h
 
-example : (¬ ∃ x : ℝ, ∀ y : ℝ, y ≤ x) ↔ (∀ x : ℝ, ∃ y : ℝ, y > x) :=
-  sorry
+example : (¬ ∃ x : ℝ, ∀ y : ℝ, y ≤ x) ↔ (∀ x : ℝ, ∃ y : ℝ, y > x) := by
+  push_neg
+  constructor <;> intro h <;> apply h
 
-example : ¬ (∃ m : ℤ, ∀ n : ℤ, m = n + 5) ↔ ∀ m : ℤ, ∃ n : ℤ, m ≠ n + 5 :=
-  sorry
+example : ¬ (∃ m : ℤ, ∀ n : ℤ, m = n + 5) ↔ ∀ m : ℤ, ∃ n : ℤ, m ≠ n + 5 := by
+  push_neg
+  constructor <;> intro h <;> apply h
 
 #push_neg ¬(∀ n : ℕ, n > 0 → ∃ k l : ℕ, k < n ∧ l < n ∧ k ≠ l)
 #push_neg ¬(∀ m : ℤ, m ≠ 2 → ∃ n : ℤ, n ^ 2 = m)
@@ -87,27 +102,59 @@ example : ¬ (∃ m : ℤ, ∀ n : ℤ, m = n + 5) ↔ ∀ m : ℤ, ∃ n : ℤ,
 
 example : ¬ (∀ x : ℝ, x ^ 2 ≥ x) := by
   push_neg
-  sorry
+  use 0.5; numbers
 
 example : ¬ (∃ t : ℝ, t ≤ 4 ∧ t ≥ 5) := by
   push_neg
-  sorry
+  intro t
+  by_cases H : t ≤ 4
+  · right
+    calc
+      t ≤ 4 := by rel[H]
+      _ < 5 := by numbers
+  · push_neg at H
+    left; apply H
 
 example : ¬ Int.Even 7 := by
-  dsimp [Int.Even]
+  dsimp[Int.Even] at *
   push_neg
-  sorry
+  intro n
+  have hn := le_or_succ_le n 3
+  obtain h | h := hn
+  · apply ne_of_gt
+    calc
+      2 * n ≤ 2 * 3 := by rel[h]
+      _ = 6 := by ring
+      _ < 7 := by numbers
+  · apply ne_of_lt
+    calc
+      2 * n ≥ 2 * 4 := by rel[h]
+      _ > 7 := by numbers
 
 example {p : ℕ} (k : ℕ) (hk1 : k ≠ 1) (hkp : k ≠ p) (hk : k ∣ p) : ¬ Prime p := by
   dsimp [Prime]
   push_neg
-  sorry
+  right
+  · use k
+    constructor
+    · apply hk
+    · constructor
+      · apply hk1
+      · apply hkp
 
 example : ¬ ∃ a : ℤ, ∀ n : ℤ, 2 * a ^ 3 ≥ n * a + 7 := by
-  sorry
+  push_neg
+  intro a
+  use 2*a^2
+  calc
+    2 * a^3 < 7 + 2*a^3 := by extra
+    _ = 2 * a^2 * a + 7 := by ring
+
 
 example {p : ℕ} (hp : ¬ Prime p) (hp2 : 2 ≤ p) : ∃ m, 2 ≤ m ∧ m < p ∧ m ∣ p := by
   have H : ¬ (∀ (m : ℕ), 2 ≤ m → m < p → ¬m ∣ p)
   · intro H
-    sorry
-  sorry
+    have := prime_test hp2 H
+    contradiction
+  push_neg at H
+  exact H

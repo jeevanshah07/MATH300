@@ -141,7 +141,12 @@ def b : ℕ → ℤ
   | n + 2 => 5 * b (n + 1) - 6 * b n
 
 example (n : ℕ) : b n = 3 ^ n - 2 ^ n := by
-  sorry
+  two_step_induction n with k IH1 IH2
+  · rw[b]; numbers
+  · rw[b]; numbers
+  · calc b (k+2) = 5 * b (k+1) - 6 * b k := by rw[b]
+    _ = 5 * (3^(k+1)-2^(k+1)) - 6 * (3^k-2^k) := by rw[IH1, IH2]
+    _ = 3^(k+1+1) - 2^(k+1+1) := by ring
 
 def c : ℕ → ℤ
   | 0 => 3
@@ -149,7 +154,12 @@ def c : ℕ → ℤ
   | n + 2 => 4 * c n
 
 example (n : ℕ) : c n = 2 * 2 ^ n + (-2) ^ n := by
-  sorry
+  two_step_induction n with k IH1 IH2
+  · rw[c]; numbers
+  · rw[c]; numbers
+  · calc c (k+2) = 4 * c k := by rw[c]
+    _ = 4 * (2*2^(k) + (-2)^(k)) := by rw[IH1]
+    _ = 2*2^(k+1+1) + (-2)^(k+1+1) := by ring
 
 def t : ℕ → ℤ
   | 0 => 5
@@ -157,7 +167,12 @@ def t : ℕ → ℤ
   | n + 2 => 2 * t (n + 1) - t n
 
 example (n : ℕ) : t n = 2 * n + 5 := by
-  sorry
+  two_step_induction n with k IH1 IH2
+  · rw[t]; numbers
+  · rw[t]; numbers
+  · calc t (k+2) = 2 * t (k+1) - t k := by rw[t]
+    _ = 2 * (2*(k+1)+5) - (2*k+5) := by rw[IH1, IH2]
+    _ = 2 * (k+1+1) + 5 := by ring
 
 def q : ℕ → ℤ
   | 0 => 1
@@ -165,7 +180,12 @@ def q : ℕ → ℤ
   | n + 2 => 2 * q (n + 1) - q n + 6 * n + 6
 
 example (n : ℕ) : q n = (n:ℤ) ^ 3 + 1 := by
-  sorry
+  two_step_induction n with k IH1 IH2
+  · rw[q]; numbers
+  · rw[q]; numbers
+  · calc q (k+2) = 2 * q (k+1) - q k + 6 * k + 6 := by rw[q]
+    _ = 2 * ((k+1)^3 + 1) - (k^3+1) + 6 * k + 6 := by rw[IH1, IH2]
+    _ = (k+1+1)^3 + 1 := by ring
 
 def s : ℕ → ℤ
   | 0 => 2
@@ -173,7 +193,35 @@ def s : ℕ → ℤ
   | n + 2 => 2 * s (n + 1) + 3 * s n
 
 example (m : ℕ) : s m ≡ 2 [ZMOD 5] ∨ s m ≡ 3 [ZMOD 5] := by
-  sorry
+  have H : ∀ n : ℕ,
+      ( s n ≡ 2 [ZMOD 5] ∧ s (n+1) ≡ 3 [ZMOD 5])
+    ∨ ( s n ≡ 3 [ZMOD 5] ∧ s (n+1) ≡ 2 [ZMOD 5])
+  · intro n
+    simple_induction n with k IH
+    · left
+      constructor
+      · rw[s]; numbers
+      · norm_num; rw[s]; numbers
+    · obtain ⟨ ih1, ih2 ⟩ | ⟨ ih1, ih2 ⟩ := IH
+      · right
+        constructor
+        · apply ih2
+        · calc s (k+2) = 2 * s (k+1) + 3 * s k := by rw[s]
+          _ ≡ 2 * 3 + 3 * 2 [ZMOD 5] := by rel[ih1, ih2]
+          _ = 5 * 2 + 2 := by numbers
+          _ ≡ 2 [ZMOD 5] := by extra
+      · left
+        constructor
+        · apply ih2
+        · calc s (k+2) = 2 * s (k+1) + 3 * s k := by rw[s]
+          _ ≡ 2 * 2 + 3 * 3 [ZMOD 5] := by rel[ih1, ih2]
+          _ = 5 * 2 + 3 := by numbers
+          _ ≡ 3 [ZMOD 5] := by extra
+  obtain ⟨ h1, h2 ⟩ | ⟨ h1, h2 ⟩ := H m
+  · left; apply h1
+  · right; apply h1
+
+
 
 def p : ℕ → ℤ
   | 0 => 2
@@ -181,7 +229,53 @@ def p : ℕ → ℤ
   | n + 2 => 6 * p (n + 1) - p n
 
 example (m : ℕ) : p m ≡ 2 [ZMOD 7] ∨ p m ≡ 3 [ZMOD 7] := by
-  sorry
+  have H : ∀ n : ℕ, 0 ≤ n →
+      (p n ≡ 2 [ZMOD 7] ∧ p (n + 1) ≡ 3 [ZMOD 7])
+    ∨ (p n ≡ 3 [ZMOD 7] ∧ p (n + 1) ≡ 2 [ZMOD 7])
+    ∨ (p n ≡ 2 [ZMOD 7] ∧ p (n + 1) ≡ 2 [ZMOD 7])
+  · intro n hn
+    induction_from_starting_point n, hn with k hk IH
+    · left
+      constructor
+      · rw [p]
+        numbers
+      · rw [p]
+        numbers
+    · obtain ⟨IH1, IH2⟩ | ⟨IH1, IH2⟩ | ⟨IH1, IH2⟩ := IH
+      · right
+        left
+        constructor
+        · apply IH2
+        · calc
+            p (k + 2) = 6 * p (k + 1) - p k := by rw [p]
+            _ ≡ 6 * 3 - 2 [ZMOD 7] := by rel [IH1, IH2]
+            _ = 2 + 7 * 2 := by numbers
+            _ ≡ 2 [ZMOD 7] := by extra
+      · right
+        right
+        constructor
+        · apply IH2
+        · calc
+            p (k + 2) = 6 * p (k + 1) - p k := by rw [p]
+            _ ≡ 6 * 2 - 3 [ZMOD 7] := by rel [IH1, IH2]
+            _ = 2 + 7 * 1 := by numbers
+            _ ≡ 2 [ZMOD 7] := by extra
+      · left
+        constructor
+        · apply IH2
+        · calc
+            p (k + 2) = 6 * p (k + 1) - p k := by rw [p]
+            _ ≡ 6 * 2 - 2 [ZMOD 7] := by rel [IH1, IH2]
+            _ = 3 + 7 * 1 := by numbers
+            _ ≡ 3 [ZMOD 7] := by extra
+  have hm : m ≥ 0 := by extra
+  obtain ⟨H1, H2⟩ | ⟨H1, H2⟩ | ⟨H1, H2⟩ := H m hm
+  · left
+    apply H1
+  · right
+    apply H1
+  · left
+    apply H1
 
 def r : ℕ → ℤ
   | 0 => 2
@@ -189,8 +283,55 @@ def r : ℕ → ℤ
   | n + 2 => 2 * r (n + 1) + r n
 
 example : forall_sufficiently_large n : ℕ, r n ≥ 2 ^ n := by
-  sorry
+  dsimp
+  use 7
+  intro n hn
+  two_step_induction_from_starting_point n, hn with k hk IH1 IH2
+  · dsimp [r]
+    numbers
+  · dsimp [r]
+    numbers
+  · calc
+      r (k + 2) = 2 * r (k + 1) + r k := by rw [r]
+      _ ≥ 2 * 2 ^ (k + 1) + 2 ^ k := by rel [IH1, IH2]
+      _ ≥ 2 * 2 ^ (k + 1) := by extra
+      _ = 2 ^ (k + 2) := by ring
 
 example : forall_sufficiently_large n : ℕ,
     (0.4:ℚ) * 1.6 ^ n < F n ∧ F n < (0.5:ℚ) * 1.7 ^ n := by
-  sorry
+  dsimp
+  use 8
+  intro n hn
+  two_step_induction_from_starting_point n, hn with k hk IH1 IH2
+  · dsimp [F]
+    constructor
+    · numbers
+    · numbers
+  · dsimp [F]
+    constructor
+    · numbers
+    · numbers
+  · obtain ⟨hk1, hk2⟩ := IH1
+    obtain ⟨hkk1, hkk2⟩ := IH2
+    constructor
+    · rw [F]
+      rw [Int.cast_add]
+      calc
+        0.4 * (1.6 : ℚ) ^ (k + 1 + 1) = 0.4 * 1.6 ^ k * 1.6 ^ 2 := by ring
+        _ = 0.4 * 1.6 ^ k * 2.56 := by ring
+        _ < 0.4 * 1.6 ^ k * 2.56 + 0.4 * 1.6 ^ k * 0.04 := by extra
+        _ = 0.4 * 1.6 ^ k * (1.6 + 1) := by ring
+        _ = 0.4 * 1.6 ^ (k + 1) + 0.4 * 1.6 ^ k := by ring
+        _ < F (k + 1) + F k := by rel [hk1, hkk1]
+
+    · rw [F]
+      rw [Int.cast_add]
+      calc
+        F (k + 1) + F k
+          < (0.5 : ℚ) * 1.7 ^ (k + 1) + 0.5 * 1.7 ^ k := by rel [hkk2, hk2]
+        _ = 0.5 * 1.7 ^ k * (1.7 + 1) := by ring
+        _ = 0.5 * 1.7 ^ k * 2.7 := by ring
+        _ < 0.5 * 1.7 ^ k * 2.7 + 0.5 * 1.7 ^ k * 0.19 := by extra
+        _ = 0.5 * 1.7 ^ k * 2.89 := by ring
+        _ = 0.5 * 1.7 ^ k * 1.7 ^ 2 := by ring
+        _ = (0.5 : ℚ) * 1.7 ^ (k + 2) := by ring

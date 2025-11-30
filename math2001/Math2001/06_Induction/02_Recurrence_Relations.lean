@@ -44,9 +44,13 @@ def x : ℕ → ℤ
 example (n : ℕ) : x n ≡ 1 [ZMOD 4] := by
   simple_induction n with k IH
   · -- base case
-    sorry
+    exact calc x 0 = 5 := by rw[x]
+    _ = 4*1 + 1 := by numbers
+    _ ≡ 1 [ZMOD 4] := by extra
   · -- inductive step
-    sorry
+    calc x (k+1) = 2*(x k) - 1 := by rw[x]
+    _ ≡ 2*1 - 1 [ZMOD 4] := by rel[IH]
+    _ = 1 := by numbers
 
 example (n : ℕ) : x n = 2 ^ (n + 2) + 1 := by
   simple_induction n with k IH
@@ -93,12 +97,28 @@ example (n : ℕ) : ∀ d, 1 ≤ d → d ≤ n → d ∣ n ! := by
     intro d hk1 hk
     obtain hk | hk : d = k + 1 ∨ d < k + 1 := eq_or_lt_of_le hk
     · -- case 1: `d = k + 1`
-      sorry
+      use (k !)
+      calc
+        (k+1)! = (k+1)*(k !) := by rw[factorial]
+        _ = d*(k !) := by rw[hk]
     · -- case 2: `d < k + 1`
-      sorry
+      have : d ∣ k ! := IH d hk1 (Nat.lt_succ_iff.mp hk)
+      obtain ⟨ x, hx ⟩ := this
+      use (k+1)*x
+      calc
+        (k+1)! = (k+1)*(k !) := by rw[factorial]
+        _ = (k+1)*(d*x) := by rw[hx]
+        _ = d*((k+1)*x) := by ring
 
 example (n : ℕ) : (n + 1)! ≥ 2 ^ n := by
-  sorry
+  simple_induction n with k IH
+  · rw[factorial]; rw[factorial]; numbers
+  · calc
+      (k+1+1)! = (k+1+1)*(k+1)! := by rw[factorial]
+      _ ≥ (k+1+1)*2^k := by rel[IH]
+      _ = k*2^k + 2*2^k := by ring
+      _ ≥ 2*2^k := by extra
+      _ = 2^(k+1) := by ring
 
 
 /-! # Exercises -/
@@ -109,37 +129,93 @@ def c : ℕ → ℤ
   | n + 1 => 3 * c n - 10
 
 example (n : ℕ) : Odd (c n) := by
-  sorry
+  simple_induction n with k IH
+  · use 3; rw[c]; numbers
+  · obtain ⟨ t, ht ⟩ := IH
+    use 3*t - 4
+    calc
+      c (k+1) = 3*(c k) - 10 := by rw[c]
+      _ = 3*(2*t + 1) - 10 := by rw[ht]
+      _ = 6*t - 7 := by ring
+      _ = 2*(3*t-4) +1 := by ring
 
 example (n : ℕ) : c n = 2 * 3 ^ n + 5 := by
-  sorry
+  simple_induction n with k IH
+  · rw[c]; numbers
+  · calc
+      c (k+1) = 3*(c k) - 10 := by rw[c]
+      _ = 3*(2*3^k+5) - 10 := by rw[IH]
+      _ = 2*3^(k+1) + 5 := by ring
 
 def y : ℕ → ℕ
   | 0 => 2
   | n + 1 => (y n) ^ 2
 
 example (n : ℕ) : y n = 2 ^ (2 ^ n) := by
-  sorry
+  simple_induction n with k IH
+  · rw[y]; numbers
+  · calc
+      y (k+1) = (y k)^2 := by rw[y]
+      _ = (2^2^k)^2 := by rw[IH]
+      _ = 2^(2*2^k) := by ring
+      _ = 2^2^(k+1) := by ring
 
 def B : ℕ → ℚ
   | 0 => 0
   | n + 1 => B n + (n + 1 : ℚ) ^ 2
 
 example (n : ℕ) : B n = n * (n + 1) * (2 * n + 1) / 6 := by
-  sorry
+  simple_induction n with k IH
+  · rw[B]; numbers
+  · calc
+      B (k+1) = B (k) + (k+1)^2 := by rw[B]
+      _ = (k*(k+1)*(2*k+1))/6 + (k+1)^2 := by rw[IH]
+      _ = (k*(k+1)*(2*k+1))/6 + 6*((k+1)^2)/6 := by ring
+      _ = (2*k^3+3*k^2+k)/6 + (6*k^2 + 12*k+6)/6 := by ring
+      _ = (2*k^3+9*k^2+13*k+6)/6 := by ring
+      _ = ((k+1)*(k+1+1)*(2*(k+1)+1))/6 := by ring
 
 def S : ℕ → ℚ
   | 0 => 1
   | n + 1 => S n + 1 / 2 ^ (n + 1)
 
 example (n : ℕ) : S n = 2 - 1 / 2 ^ n := by
-  sorry
+  simple_induction n with k IH
+  · rw[S]; numbers
+  · calc
+      S (k+1) = S k + 1/2^(k+1) := by rw[S]
+      _ = 2 - 1/2^k + 1/2^(k+1) := by rw[IH]
+      _ = 2 - 1/2^k*(1 - 1/2) := by ring
+      _ = 2 - 1/2^(k+1) := by ring
 
 example (n : ℕ) : 0 < n ! := by
-  sorry
+  simple_induction n with k IH
+  · rw[factorial]; numbers
+  · calc
+      0 < (k+1)*k ! := by positivity
+      _ = (k+1)! := by rw[factorial]
 
 example {n : ℕ} (hn : 2 ≤ n) : Nat.Even (n !) := by
-  sorry
+  induction_from_starting_point n, hn with k hk IH
+  · use 1
+    rw[factorial]; rw[factorial]; rw[factorial]
+  · obtain ⟨ t, ht ⟩ := IH
+    use t * (k+1)
+    calc
+      (k+1)! = (k+1)*k ! := by rw[factorial]
+      _ = (k+1)*(2*t) := by rw[ht]
+      _ = 2*(t*(k+1)) := by ring
 
 example (n : ℕ) : (n + 1) ! ≤ (n + 1) ^ n := by
-  sorry
+  simple_induction n with k IH
+  · repeat rw[factorial]
+    numbers
+  · calc
+      (k+1+1)! = (k+1+1)*(k+1)! := by rw[factorial]
+      _ ≤ (k+1+1)*(k+1)^k := by rel[IH]
+      _ ≤ (k+1+1)*(k+1+1)^k := by {
+        apply Nat.mul_le_mul_left
+        apply Nat.pow_le_pow_of_le_left
+        norm_num
+      }
+      _ = (k+1+1)^(k+1) := by ring

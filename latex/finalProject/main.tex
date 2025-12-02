@@ -1,0 +1,83 @@
+\documentclass{exam}
+\usepackage{textbook}
+
+\begin{document}
+\section{Sylows Theorem}
+\subsection{Group Axioms}
+\begin{definition}{Group axioms}{}
+	Let $G = (G, *)$ be a group where $G$ is a set and $*$ the group operation. Then, the following are true:
+	\begin{enumerate}
+		\item There exists an identity element $1_{G} \in G$ such that $g * 1_{G} = 1_{G} *g = g$ for all $g \in G$.
+		\item Every element $g \in G$ has an inverse $g^{-1} \in G$ such that $g * g^{-1} = 1_{G}$
+		\item The product elements in $G$ is associative such that for $a, b, c \in G$, $(a * b) * c = a * (b * c)$.
+		\item The product of two elements in $G$ is commutative if and only if the group is abelian. (Ie. if a group $G$ is abelian then $g * q = q * g$ for all $g, q \in G$)
+	\end{enumerate}
+\end{definition}
+
+\subsection{Group Actions, Orbits, and Stabilizers}
+\begin{definition}{Group Actions}{}
+    Let $G$ be a group. A set $S$ is a $G$-set if there is a function from $G\times\,S \to S$ (which we write as $g \cdot s$ for $g\in\,G$ and $s\in\,S$) satisfying: 
+    \begin{enumerate}
+        \item $(gh) \cdot s = g \cdot (h \cdot s)$ for all $g, h \in G$ and $s \in $, and 
+        \item $1 \cdot s = s$ for all $s \in S$
+    \end{enumerate}
+\end{definition}
+
+\begin{definition}{Orbits}{}
+    Let $G$ be a group and $S$ be a set such that there exists a group action $\sigma: G\times\,S \to S$. The \textbf{orbit} of an element $s \in S$ is the set of all points $s$ can be moved to: 
+    \[
+        \mathop{\text{Orb}}(s) = \braces{g \cdot x \mid g \in G}
+    \]
+\end{definition}
+
+\begin{definition}{Stabilizers}{}
+    Let $G$ be a gruop and $S$ be a set such that there exists a group action $\sigma: G\times\, S \to S$. The \textbf{stabilizer} of an element $s \in S$ is the \textit{subgroup} that $s$ fixed: 
+    \[
+        \mathop{\text{Stab}}(g) = \braces{g \in G \mid g \cdot s = s}
+    \]
+\end{definition}
+
+Now with these two established we have 
+
+\begin{thm}{Orbit-Stabilizer}{\label{thm:2.1}}
+    Let $G$ be a \textit{finite} group, $S$ be any set that $G$ acts on. Then for any $s \in S$,
+    \[
+        |G| = |{\text{Orb}}(s)| \cdot |{\text{Stab}}(s)|
+    \]
+\end{thm}
+
+The proof of this theorem is omitted for sake of the project. 
+
+\subsection{Proof of Sylows Theorem}
+\begin{lma}{Lucas's Lemma}{\label{lma:1}}
+    Let $p$ and $m$ be integers such that $p$ is prime and $\gcd(p, m) = 1$. Then 
+    \[
+        \begin{pmatrix}
+            p^{k}m \\ p^k
+        \end{pmatrix} 
+        \equiv m \pmod{p}
+    \]
+\end{lma}
+
+Once again, the proof is omitted for the sake of the project.
+
+\begin{thm}{Sylows First\footnotemark~Theorem}{}
+    Given a group $G$ of size $p^{k}m$ where $p$ is a prime and $\gcd(p, m) = 1$ we have that $G$ has a subgroup of size $p^k$. 
+\end{thm}
+
+\footnotetext{There are actually three theorems attributed to Sylow, and they're all related!}
+
+\begin{proof}
+    We start by defining a set of sub\textit{sets} $\Omega = \braces{X \subseteq G \mid |X|=p^k}$. Next, we will define a group action such that $G$ acts on $\Omega$ by $g \cdot X = \braces{gx \mid x \in X}$, noting that the map $x\mapsto gx$ is bijective and thus the size is preserved between $X$ and $g\cdot\,X$. \\ If we take a look at the size of the set we just created, $\Omega$, notice that by definition of $\Omega$ we are choosing subsets of size $p^k$ from $G$ which has size $p^{k}m$. So, 
+    \[
+        |\Omega| = \begin{pmatrix}
+            p^{k}m \\ p^k
+        \end{pmatrix} \equiv m \pmod{p}
+    \]
+    with the congruence coming from Lemma~(\ref{lma:1}). \\ Now since, we can split $\Omega$ into a disjoint union of orbits, the size of $\Omega$ must be the sum of the sizes of each set in the disjoint union. Since $|\Omega| \equiv m \pmod{p}$ we know that one orbit of the action of $G$ has a size that is \textbf{not} a multiple of $p$ since $\gcd(p, m) = 1$. We will call this orbit $O$. \\ Now choose a set inside $O$, say $\alpha \in O$. Then, the orbit of $\alpha$ must be $O$ itself, $G \cdot \alpha = O$ because the orbit of an element in an orbit is the orbit itself. Applying the Orbit-Stabilizer Theorem~(\ref{thm:2.1}) we can see that if $G_{\alpha}$ is the stabilizer of $\alpha$ then,
+    \[
+        |G_{\alpha}| \cdot |G \cdot \alpha| = p^{k}m.
+    \]
+    However, since $p^{k} \nmid |G \cdot \alpha|$, we know that $p^k \mid |G_{\alpha}|$. We must now show that $|G_{\alpha}| = p^k$. \\ We start by considering some $a \in \alpha$ and the map $G \to G$ given by $g \mapsto ga$ for $g \in G$. This map is clearly a bijection since we are able to multiply by $a^{-1}$. Now if $g \in G_{\alpha}$ then $ga \in \alpha$ by definition of a stabilizer. However, because this map was a bijection we know that $|G_{\alpha}| \leq |\alpha|$ (since $ga$ is in some subset of $\alpha$). But $|\alpha| = p^k$ so $|G_{\alpha}| \leq p^k$ and since $p^k \mid |G_{\alpha}|$ we have $p^k \leq |G_{\alpha}|$. Therfore $|G_{\alpha}| = p^k$ and the stabilizer $G_{\alpha}$ is the desired group.
+\end{proof}
+\end{document}

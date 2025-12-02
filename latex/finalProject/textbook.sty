@@ -1,0 +1,80 @@
+\ProvidesPackage{textbook}
+
+\usepackage{amsmath}
+\usepackage{gensymb}
+\usepackage{fix-cm}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{mdframed}
+\usepackage{tocloft}
+\usepackage{tocbibind}
+\usepackage[breaklinks]{hyperref}
+\usepackage{nameref}
+\usepackage{array}
+\usepackage{amssymb}
+\usepackage{import}
+\usepackage[x11names]{xcolor}
+
+\pgfplotsset{compat=1.18}
+\renewcommand{\arraystretch}{1.2}
+
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\qspace}{\vspace{\stretch{1}}}
+
+% From Evan Chen's Napkin
+\newcommand{\ZZ}{\mathbb Z}
+\newcommand{\QQ}{\mathbb Q}
+\newcommand{\RR}{\mathbb R}
+\newcommand{\NN}{\mathbb N}
+
+\newcommand{\braces}[1]{\left\{#1\right\}}
+\newcommand{\floor}[1]{\ensuremath{\left\lfloor #1 \right\rfloor}}
+\newcommand{\ceil}[1]{\ensuremath{\left\lceil #1 \right\rceil}}
+
+\newcommand{\mand}{\hspace{0.2cm}\text{ and }\hspace{0.2cm}}
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=section,
+    linkcolor=blue,}
+
+\marksnotpoints 
+\pointsinrightmargin
+\bracketedpoints
+
+\pagestyle{headandfoot}
+\runningheadrule
+\firstpageheader{}{}{}
+\runningheader{Mathematics}{}{Shah}
+\firstpagefooter{}{}{}
+\runningfooter{ }{\thepage}{ }
+
+\tcbuselibrary{theorems}
+
+\NewTcbTheorem[number within=subsection]{definition}{Definition}%
+{colback=green!5,colframe=green!35!black,fonttitle=\bfseries}{th}
+
+\NewTcbTheorem[number within=subsection]{fact}{Fact}%
+{colback=gray!5,colframe=gray!35!black,fonttitle=\bfseries}{th}
+
+\NewTcbTheorem[number within=subsection]{note}{Note}%
+{colback=blue!15,colframe=blue!55!black,fonttitle=\bfseries}{th}
+
+\NewTcbTheorem[number within=subsection]{example}{Example}%
+{colback=orange!5,colframe=orange!35!black,fonttitle=\bfseries}{th}
+
+\NewTcbTheorem[number within=subsection]{question}{Question}%
+{colback=red!5,colframe=red!35!black,fonttitle=\bfseries}{th}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}{Corollary}[section]
+
+\DeclareMathOperator{\intdiv}{div}
+
+\newenvironment{thm}[1]{\begin{tcolorbox}[colback=LightSteelBlue2, breakable, sharp corners]\begin{theorem}[#1]}{\end{theorem}\end{tcolorbox}}
+
+\newenvironment{lma}[1]{\begin{tcolorbox}[colback=orange!70]\begin{lemma}[#1]}{\end{lemma}\end{tcolorbox}}

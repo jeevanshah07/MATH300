@@ -127,8 +127,19 @@ example : ∀ f : Celestial → Celestial, Injective f → Bijective f := by
       apply h_sun
     · use moon
       apply h_moon
-  | moon, sun => sorry
-  | moon, moon => sorry
+  | moon, sun =>
+    intro y
+    cases y
+    · use moon
+      apply h_moon
+    · use sun
+      apply h_sun
+  | moon, moon =>
+    have : sun = moon
+    · apply hf
+      rw [h_sun, h_moon]
+    contradiction
+
 
 
 example : ¬ ∀ f : ℕ → ℕ, Injective f → Bijective f := by
@@ -154,17 +165,34 @@ example : ¬ ∀ f : ℕ → ℕ, Injective f → Bijective f := by
 
 
 example : Bijective (fun (x : ℝ) ↦ 4 - 3 * x) := by
-  sorry
+  constructor
+  · intro x1 x2 hf
+    dsimp at hf
+    have h : 3 * x1 = 3 * x2 := by addarith [hf]
+    cancel 3 at h
+  · intro y
+    use (4 - y) / 3
+    dsimp
+    ring
 
+-- this function IS bijective
 example : ¬ Bijective (fun (x : ℝ) ↦ 4 - 3 * x) := by
   sorry
 
-
+-- this function is NOT bijective
 example : Bijective (fun (x : ℝ) ↦ x ^ 2 + 2 * x) := by
   sorry
 
 example : ¬ Bijective (fun (x : ℝ) ↦ x ^ 2 + 2 * x) := by
-  sorry
+  dsimp [Bijective]
+  push_neg
+  left
+  dsimp [Injective]
+  push_neg
+  use 0, -2
+  constructor
+  · numbers
+  · numbers
 
 inductive Element
   | fire
@@ -182,14 +210,102 @@ def e : Element → Element
   | air => water
 
 example : Bijective e := by
-  sorry
+  constructor
+  · intro x1 x2 hx
+    cases x1 <;> cases x2 <;> exhaust
+  · intro y
+    cases y
+    · use earth
+      dsimp [e]
+    · use air
+      dsimp [e]
+    · use fire
+      dsimp [e]
+    · use water
+      dsimp [e]
 
+-- e IS bijective
 example : ¬ Bijective e := by
   sorry
 
 
 example : ∀ f : Subatomic → Subatomic, Injective f → Bijective f := by
-  sorry
+  intro f f_inj
+  constructor
+  · apply f_inj
+  · intro y
+    dsimp [Injective] at f_inj
+    match h_pt : f proton, h_nt : f neutron, h_el : f electron with
+    | proton, neutron, electron =>
+      cases y
+      · use proton
+        apply h_pt
+      · use neutron
+        apply h_nt
+      · use electron
+        apply h_el
+    | proton, electron, neutron =>
+      cases y
+      · use proton
+        apply h_pt
+      · use electron
+        apply h_el
+      · use neutron
+        apply h_nt
+    | neutron, proton, electron =>
+      cases y
+      · use neutron
+        apply h_nt
+      · use proton
+        apply h_pt
+      · use electron
+        apply h_el
+    | neutron, electron, proton =>
+      cases y
+      · use electron
+        apply h_el
+      · use proton
+        apply h_pt
+      · use neutron
+        apply h_nt
+    | electron, proton, neutron =>
+      cases y
+      · use neutron
+        apply h_nt
+      · use electron
+        apply h_el
+      · use proton
+        apply h_pt
+    | electron, neutron, proton =>
+      cases y
+      · use electron
+        apply h_el
+      · use neutron
+        apply h_nt
+      · use proton
+        apply h_pt
+
+    | electron, electron, _
+    | proton, proton, _
+    | neutron, neutron, _ =>
+      have h : proton = neutron
+      · apply f_inj
+        rw [h_pt, h_nt]
+      contradiction
+    | electron, _, electron
+    | proton, _, proton
+    | neutron, _, neutron =>
+      have h : proton = electron
+      · apply f_inj
+        rw [h_pt, h_el]
+      contradiction
+    | _, electron, electron
+    | _, proton, proton
+    | _, neutron, neutron =>
+      have h : neutron = electron
+      · apply f_inj
+        rw [h_nt, h_el]
+      contradiction
 
 
 example : ∀ f : Element → Element, Injective f → Bijective f := by
